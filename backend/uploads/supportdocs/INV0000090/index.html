@@ -1,0 +1,102 @@
+<div style="padding:10px 20px ;width:4.7in; height: 6in; margin:0;margin-left: auto; margin-right: auto; position: relative;">
+  
+  <div style="width: 100%;">
+    <img src="${process.env.NEXT_PUBLIC_CLIENT_URL}/assets/images/Ninewells_Invoice_Header.jpeg" height="90px">
+  </div>
+
+  <div style="text-align: center;">
+    <h2 style="display: inline-block; margin: 10px; margin-top: 0;">Inovice</h2>
+    ${duplicate ? '<h4 style="float: right; margin: 10px; margin-top: 0;">Duplicate</h4>' : ''}
+  </div>
+
+  <div style="display: flex; justify-content: space-between;">
+    <table style="font-size: 13px; line-height: 13px;">
+      <tr>
+        <td><b>Reciept No</b></td>
+        <td>&nbsp;<b>:</b> &nbsp;${invoiceData?.invoice_no || ''}</td>
+      </tr>
+      <tr>
+        <td><b>Date</b></td>
+        <td>&nbsp;<b>:</b> &nbsp;${new Date(invoiceData?.create_on).toLocaleString("en-US",{ year: "numeric", month: "2-digit", day: "2-digit", hour: "numeric", minute: "numeric", hour12: true,}) || ''}</td>
+      </tr>
+      <tr>
+        <td><b>Name</b></td>
+        <td>&nbsp;<b>:</b> &nbsp;${invoiceData?.name || ''}</td>
+      </tr>
+      <tr>
+        <td><b>Gender</b></td>
+        <td>&nbsp;<b>:</b> &nbsp;${invoiceData.gender == "M" ? "Male": invoiceData.gender == "F" ? "Female" : invoiceData.gender == "U" ? "Unknown" : ""}</td>
+      </tr>
+      <tr>
+        <td><b>Phone</b></td>
+        <td>&nbsp;<b>:</b> &nbsp;${invoiceData?.telephone_no || ''}</td>
+      </tr>
+      <tr>
+        <td><b>Consultant</b></td>
+        <td>&nbsp;<b>:</b> &nbsp;${invoiceData?.doctor_name || ''}</td>
+      </tr>
+      <!--<tr>
+        <td><b>Department</b></td>
+        <td>&nbsp;<b>:</b> &nbsp;${/*invoiceData?.create_on ||*/ ''}</td>
+      </tr>-->
+    </table>
+
+    <table style="font-size: 13px; line-height: 13px; display: block; margin-right: 60px;">
+      <tr>
+        <td><b>PID</b></td>
+        <td>&nbsp;<b>:</b> &nbsp;${invoiceData?.pid_no || ''}</td>
+      </tr>
+      <tr>
+        <td><b>Passcode</b></td>
+        <td>&nbsp;<b>:</b> &nbsp;${invoiceData?.passkey || ''}</td>
+      </tr>
+      <tr>
+        <td><b>Age</b></td>
+        <td>&nbsp;<b>:</b> &nbsp;${invoiceData?.age_years || ''} Y &nbsp;${invoiceData?.age_months || ''} M &nbsp;${invoiceData?.age_days || ''} D</td>
+      </tr>
+      <tr></tr>
+      <tr></tr>
+      <tr></tr>
+      <tr></tr>
+      <tr></tr>
+      <tr></tr>
+    </table>
+  </div>
+
+  <br />
+  <table style="width: 100%; text-align: left;border-collapse: collapse; font-size: 15px;">
+    <thead style="border-bottom: 2px solid #000; border-top: 2px solid #000;">
+      <tr>
+        <th colspan="2">DESCRIPTION</th>
+        <th style="font-size:13px">DUE ON</th>
+        <th>AMOUNT</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${itemRows}
+      <tr style="border-top: 1px dashed #b9b9b9;">
+        <td colspan="2"></td>
+        <td style="text-align:right"><b>Total &nbsp;&nbsp;&nbsp;:</b></td>
+        <td style="text-align: right;">${invoiceData.subtotal?.toFixed(2) || '0.00'}</td>
+      </tr>
+      ${invoiceData.discount_amount? 
+        `<tr>
+          <td colspan="2"></td>
+          <td style="text-align:right"><b>Discount &nbsp;&nbsp;&nbsp;:</b></td>
+          <td style="text-align: right;">${invoiceData.discount_amount?.toFixed(2) || '0.00'}</td>
+        </tr>`
+      : ''}
+      <tr>
+        <td><b>Payment Type&nbsp;:&nbsp;&nbsp;&nbsp;Cash</b></td>
+        <td></td>
+        <td style="text-align:right;"><b>Net Total &nbsp;&nbsp;&nbsp;:</b></td>
+        <td style="border-top: 1px solid #000;border-bottom: 3px double #000; text-align: right;">${invoiceData.total?.toFixed(2) || '0.00'}</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="font-size: 15px; margin:5px;">LKR ${toWords.convert(invoiceData.total?.toFixed(2) || '0.00').toUpperCase()}</p>
+  <p style="font-size: 15px; margin-top:5px;"><b>Cashier&nbsp;:</b> ${invoiceData.cashier || ''}</p>
+
+  <p style="position: absolute; bottom: 0; font-size: 10px;">Printed On: ${new Date().toLocaleString("en-US",{ year: "numeric", month: "2-digit", day: "2-digit", hour: "numeric", minute: "numeric", hour12: true,})}</p>
+
+</div>

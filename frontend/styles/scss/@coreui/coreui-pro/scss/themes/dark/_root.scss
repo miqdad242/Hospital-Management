@@ -1,0 +1,22 @@
+// stylelint-disable scss/selector-no-redundant-nesting-selector
+& {
+  @each $color, $value in $theme-colors-dt {
+    --#{$prefix}#{$color}: #{$value};
+  }
+
+  @each $color, $value in $theme-colors-rgb-dt {
+    --#{$prefix}#{$color}-rgb: #{$value};
+  }
+
+  --#{$prefix}body-color-rgb: #{to-rgb($body-color-dt)};
+  --#{$prefix}body-bg-rgb: #{to-rgb($body-bg-dt)};
+
+  --#{$prefix}link-color: #{$link-color-dt};
+  --#{$prefix}link-color-rgb: #{to-rgb($link-color-dt)};
+
+  // Gradients
+  @each $color, $map in $theme-gradients-dt {
+    --#{$prefix}#{$color}-start: #{map-get($map, "start")};
+    --#{$prefix}#{$color}-stop: #{map-get($map, "stop")};
+  }
+}

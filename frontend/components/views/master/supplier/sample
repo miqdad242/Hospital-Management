@@ -1,0 +1,944 @@
+// import React, { useState, useRef, useEffect } from 'react'
+// import DataEditor, {
+//     GridCell,
+//     GridCellKind,
+//     GridColumn,
+//     NumberCell,
+//     Theme
+// } from "@glideapps/glide-data-grid";
+// import {
+//     GrNewWindow
+// } from 'react-icons/gr'
+// import { BsPlusCircle } from "react-icons/bs";
+// import {IoMdArrowRoundBack} from "react-icons/io";
+// import api from "../../../api";
+// import {
+//     CRow,
+//     CCol,
+//     CFormCheck,
+//     CForm,
+//     CFormInput,
+//     CFormLabel,
+//     CCard,
+//     CCardBody, CFormSelect, CFormSwitch,
+//     CToast, CInputGroup, CInputGroupText,
+//     CToastBody,
+//     CButton,
+//     CCardHeader,
+//     CToastClose,
+//     CModal, CModalHeader, CModalTitle, CModalBody, CModalFooter,
+//     CToaster,
+//     CFormTextarea,
+//     CNav, CNavLink, CNavItem, CTabContent, CTabPane
+// } from '@coreui/react-pro'
+// import ToastError from '../../../components/ToastError';
+// import Select from '../../../components/Select';
+// import DataGrid from '../../../components/DataGrid';
+// import { useSearchParams,useNavigate } from 'react-router-dom';
+
+
+// const Index = () => {
+//     const [searchParams, setSearchParams] = useSearchParams();
+//     const [toast, addToast] = useState(0)
+//     const [units, setUnits] = useState([])
+//     const [keywordForm, setKeywordForm] = useState({})
+//     const [keywords, setKeywords] = useState([])
+//     const [ageWiseReferenceForm, setAgeWiseReferenceForm] = useState({})
+//     const [ageWiseReferences, setAgeWiseReferences] = useState([])
+//     const [mappingForm, setMappingForm] = useState({})
+//     const [mappings, setMappings] = useState([])
+//     const [elementGroups, setElementGroups] = useState([])
+//     const [divisions, setDivisions] = useState([])
+//     const [analyzers, setAnalyzers] = useState([])
+//     const [element, setElement] = useState({});
+//     const formHeader = useRef();
+//     const toaster = useRef();
+//     const [activeKey, setActiveKey] = useState(1);
+//     const id = searchParams.get('id');
+//     const navigate = useNavigate();
+
+//     useEffect(() => {
+//         fetchDivisions();
+//         fetchAnalyzers();
+//         fetchUnits();
+//         fetchElementGroups();
+//         if (id !== null) {
+//             fetchElement(id);
+//         }
+//     }, []);
+
+//     useEffect(() => {
+
+//     }, [element, keywordForm, ageWiseReferenceForm, mappingForm]);
+
+
+//     const keywordColumns = [
+//         {
+//             title: "Keyword",
+//             id: "keyword",
+//             width: 150,
+//             kind: GridCellKind.RowID,
+//             align: "left",
+//             editable: false
+//         },
+//         {
+//             title: "Default",
+//             id: "default",
+//             width: 100,
+//             kind: GridCellKind.Boolean,
+//             align: "center",
+//             editable: false
+//         }];
+//     const ageWiseRefColumns = [
+//         {
+//             title: "From",
+//             id: "i_from_days",
+//             width: 100,
+//             kind: GridCellKind.Text,
+//             align: "left",
+//             editable: false
+//         },
+//         {
+//             title: "To",
+//             id: "i_to_days",
+//             width: 100,
+//             kind: GridCellKind.Text,
+//             align: "center",
+//             editable: false
+//         },
+//         {
+//             title: "Gender",
+//             id: "sex",
+//             width: 100,
+//             kind: GridCellKind.Text,
+//             align: "center",
+//             editable: false
+//         },
+//         {
+//             title: "Lower",
+//             id: "lower",
+//             width: 100,
+//             kind: GridCellKind.Text,
+//             align: "center",
+//             editable: false
+//         },
+//         {
+//             title: "critical lower",
+//             id: "critical_lower",
+//             width: 150,
+//             kind: GridCellKind.Text,
+//             align: "center",
+//             editable: false
+//         },
+//         {
+//             title: "Upper",
+//             id: "lower",
+//             width: 140,
+//             kind: GridCellKind.Text,
+//             align: "center",
+//             editable: false
+//         },
+//         {
+//             title: "critical upper",
+//             id: "critical_upper",
+//             width: 150,
+//             kind: GridCellKind.Text,
+//             align: "center",
+//             editable: false
+//         },
+
+//     ];
+
+//     const ananlyzerMappingColumns = [
+//         {
+//             title: "Analyzer",
+//             id: "analyzer_code",
+//             width: 100,
+//             kind: GridCellKind.Text,
+//             align: "left",
+//             editable: false
+//         },
+//         {
+//             title: "Mapping Code",
+//             id: "mapping_code",
+//             width: 150,
+//             kind: GridCellKind.Text,
+//             align: "center",
+//             editable: false
+//         },
+//         {
+//             title: "Assay ID",
+//             id: "assay_id",
+//             width: 100,
+//             kind: GridCellKind.Text,
+//             align: "center",
+//             editable: false
+//         },
+//         {
+//             title: "Calculation",
+//             id: "calculation",
+//             width: 100,
+//             kind: GridCellKind.Boolean,
+//             align: "center",
+//             editable: false
+//         },
+//         {
+//             title: "Order",
+//             id: "order",
+//             width: 100,
+//             kind: GridCellKind.Boolean,
+//             align: "center",
+//             editable: false
+//         },
+
+//     ];
+
+//     const fetchDivisions = async () => {
+//         let { data, status, statusText } = await api.get('/api/division')
+//         if (status === 200) {
+//             let response = (data.message);
+//             if (data.status === true) {
+//                 let values = data.payload.data
+//                 for (let index = 0; index < values.length; index++) {
+//                     const element = values[index];
+//                     element.label = element.division_name;
+//                     element.value = element.division_code;
+//                     values[index] = element;
+//                 }
+//                 setDivisions(values);
+//             } else {
+//                 let toastFailMsg = (<ToastError response={response} />);
+//                 addToast(toastFailMsg);
+//             }
+//         } else {
+//             let response = (data.message);
+//             let toastFailMsg = (<ToastError response={response} />);
+//             addToast(toastFailMsg);
+//         }
+//     };
+
+//     const fetchAnalyzers = async (filter, page = 0, rowCount = 50) => {
+//         let { data, status, statusText } = await api.get('/api/analyzer', { params: { filter: filter, page: page, rowCount: rowCount } })
+//         if (status === 200) {
+//             let response = (data.message);
+//             if (data.status === true) {
+//                 let values = data.payload.data
+//                 for (let index = 0; index < values.length; index++) {
+//                     const analyzer = values[index];
+//                     analyzer.label = analyzer.analyzer_name;
+//                     analyzer.value = analyzer.analyzer_code;
+//                     values[index] = analyzer;
+//                 }
+//                 setAnalyzers(values);
+//             } else {
+//                 let toastFailMsg = (<ToastError response={response} />);
+//                 addToast(toastFailMsg);
+//             }
+//         } else {
+//             let response = (data.message);
+//             let toastFailMsg = (<ToastError response={response} />);
+//             addToast(toastFailMsg);
+//         }
+//     };
+
+//     const fetchElementGroups = async () => {
+//         let { data, status, statusText } = await api.get('/api/elementgroups')
+//         if (status === 200) {
+//             let response = (data.message);
+//             if (data.status === true) {
+//                 let values = data.payload.data
+//                 for (let index = 0; index < values.length; index++) {
+//                     const p = values[index];
+//                     p.label = p.element_group_name;
+//                     p.value = p.element_group_code;
+//                     values[index] = p;
+//                 }
+//                 setElementGroups(values);
+//             } else {
+//                 let toastFailMsg = (<ToastError response={response} />);
+//                 addToast(toastFailMsg);
+//             }
+//         } else {
+//             let response = (data.message);
+//             let toastFailMsg = (<ToastError response={response} />);
+//             addToast(toastFailMsg);
+//         }
+
+//     };
+//     const fetchUnits = async () => {
+//         let { data, status, statusText } = await api.get('/api/units')
+//         if (status === 200) {
+//             let response = (data.message);
+//             if (data.status === true) {
+//                 let values = data.payload.data
+//                 for (let index = 0; index < values.length; index++) {
+//                     const element = values[index];
+//                     element.label = element.unit_name;
+//                     element.value = element.unit_code;
+//                     values[index] = element;
+//                 }
+//                 setUnits(values);
+//             } else {
+//                 let toastFailMsg = (<ToastError response={response} />);
+//                 addToast(toastFailMsg);
+//             }
+//         } else {
+//             let response = (data.message);
+//             let toastFailMsg = (<ToastError response={response} />);
+//             addToast(toastFailMsg);
+//         }
+
+//     };
+
+//     const fetchElement = async (id) => {
+//         let { data, status, statusText } = await api.get(/api/element/${id})
+//         if (status === 200) {
+//             let response = (data.message);
+//             if (data.status === true) {
+//                 let t = { ...data.payload.data };
+//                 setElement(t);
+//                 if (t.keywords !== null) {
+//                     let p = [...t.keywords]
+//                     setKeywords(p)
+//                 }
+//                 if (t.reference_ranges !== null) {
+//                     let p = [...t.reference_ranges]
+//                     setAgeWiseReferences(p)
+//                 }
+//                 if (t.mappings !== null) {
+//                     let p = [...t.mappings]
+//                     setMappings(p)
+//                 }
+//                 console.log("elements",data.payload.data)
+//             } else {
+//                 let toastFailMsg = (<ToastError response={response} />);
+//                 addToast(toastFailMsg);
+//             }
+//         } else {
+//             let response = (data.message);
+//             let toastFailMsg = (<ToastError response={response} />);
+//             addToast(toastFailMsg);
+//         }
+
+//     };
+//     const locationDirect = () => {
+//         navigate('/master/element');
+//     }
+//     const saveElement = (formData) => {
+//         let json = formData;
+//         console.log("submit data",json)
+//         api.post('/api/element', json, {
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             }
+//         }).then(({ data, status, statusText }) => {
+//             if (status === 200) {
+//                 let response = (data.message);
+//                 if (data.status === true) {
+//                     let toastSuccessMsg = (
+//                         <CToast autohide={true} delay={2000} visible={true} color="success" className="text-white align-items-center">
+//                             <div className="d-flex">
+//                                 <CToastBody>{response}</CToastBody>
+//                                 <CToastClose className="me-2 m-auto" white />
+//                             </div>
+//                         </CToast>);
+//                     addToast(toastSuccessMsg);
+//                     // let id = data.payload.id;
+//                     // let p = { ...formData }
+//                     // p.element_code = id;
+//                     // setElement(p);
+//                     // fetchElement(id);
+//                     setTimeout(function(){
+//                         locationDirect()
+//                 }, 2000);
+//                 } else {
+//                     let toastFailMsg = (
+//                         <CToast autohide={true} delay={2000} visible={true} color="danger" className="text-white align-items-center">
+//                             <div className="d-flex">
+//                                 <CToastBody>{response}</CToastBody>
+//                                 <CToastClose className="me-2 m-auto" white />
+//                             </div>
+//                         </CToast>);
+//                     addToast(toastFailMsg);
+//                 }
+//             } else {
+//                 let response = (data.message);
+//                 let toastFailMsg = (
+//                     <CToast autohide={true} delay={2000} visible={true} color="danger" className="text-white align-items-center">
+//                         <div className="d-flex">
+//                             <CToastBody>{response}</CToastBody>
+//                             <CToastClose className="me-2 m-auto" white />
+//                         </div>
+//                     </CToast>);
+//                 addToast(toastFailMsg);
+//             }
+//         })
+//     }
+
+//     const onHeaderSave = () => {
+//         const formElement = formHeader.current;
+//         let formInfo = new FormData(formElement);
+//         var formData = {};
+//         formInfo.forEach(function (value, key) {
+//             formData[key] = value;
+//         });
+//         if (formData["element_code"] === "") {
+//             formData["element_code"] = null;
+//         }
+//         formData["calculate"] = formData["calculate"] === "on" ? true : false;
+//         formData["sperate_barcode"] = formData["sperate_barcode"] === "on" ? true : false;
+//         formData["upper"] = Number(formData["upper"]);
+//         formData["lower"] = Number(formData["lower"]);
+//         formData["critical_upper"] = Number(formData["critical_upper"]);
+//         formData["critical_lower"] = Number(formData["critical_lower"]);
+//         formData["decimal_places"] = Number(formData["decimal_places"]);
+//         formData["keywords"] = keywords;
+//         formData["mappings"] = mappings;
+//         formData["agewise_references"] = ageWiseReferences;
+//         saveElement(formData);
+
+//     }
+
+//     const deleteKeyword = (keyword) => {
+//         let p = [...keywords]
+//         p = p.filter(x => x !== keyword)
+//         setKeywords(p)
+//     }
+//     const editKeyword = (keyword) => {
+//         let p = { ...keyword }
+//         p.index = keywords.indexOf(keyword)
+//         setKeywordForm(p);
+//     }
+//     const onSubmitAddOrUpdateKeyword = (e) => {
+//         if (keywordForm.index === undefined || keywordForm.index === null) {
+//             let p = [...keywords];
+//             p.push(keywordForm);
+//             setKeywords(p);
+//         } else {
+//             let p = [...keywords];
+//             p[keywordForm.index] = (keywordForm);
+//             setKeywords(p);
+//         }
+//         let t = { ...keywordForm };
+//         t.default = false;
+//         t.keyword = "";
+//         t.index = null;
+//         setKeywordForm(t);
+//     }
+
+//     const deleteMapping = (mapping) => {
+//         let p = [...mappings]
+//         p = p.filter(x => x !== mapping)
+//         setMappings(p)
+//     }
+//     const editMapping = (mapping) => {
+//         let p = { ...mapping }
+//         setMappingForm(p);
+//     }
+//     const onSubmitAddOrUpdateAnalyzerMapping = (e) => {
+//         if (mappingForm.index === undefined || mappingForm.index === null) {
+//             let p = [...mappings];
+//             p.push(mappingForm);
+//             setMappings(p);
+//         } else {
+//             let p = [...mappings];
+//             p[mappingForm.index] = (mappingForm);
+//             setMappings(p);
+//         }
+//         let t = { ...mappingForm };
+//         t.default = false;
+//         t.keyword = "";
+//         setMappingForm(t);
+//     }
+
+
+//     const deleteAgeWiseReference = (reference) => {
+//         let p = [...ageWiseReferences]
+//         p = p.filter(x => x !== reference)
+//         setAgeWiseReferences(p)
+//     }
+//     const editAgeWiseReference = (reference) => {
+//         let p = { ...reference }
+//         setAgeWiseReferenceForm(p);
+//     }
+//     const onSubmitAddOrUpdateAgeWiseReference = (e) => {
+//         if (ageWiseReferenceForm.index === undefined || ageWiseReferenceForm.index === null) {
+//             let p = [...ageWiseReferences];
+//             p.push(ageWiseReferenceForm);
+//             setAgeWiseReferences(p);
+//         } else {
+//             let p = [...ageWiseReferences];
+//             p[ageWiseReferenceForm.index] = (ageWiseReferenceForm);
+//             setAgeWiseReferences(p);
+//         }
+//         let t = { ...ageWiseReferenceForm };
+//         t.default = false;
+//         t.keyword = "";
+//         setAgeWiseReferenceForm(t);
+//     }
+
+//     return (
+//         <>
+//             <CToaster ref={toaster} push={toast} className='toaster toast-container p-3 position-fixed top-0 start-50 translate-middle-x' />
+//             <CCard>
+//                 <CCardHeader>
+//                     <CRow className="mb-1">
+
+                    
+
+//                     <CCol sm={2} md={1} lg={1} className='fs-2 d-flex h-100 ps-4'> 
+//                             <IoMdArrowRoundBack style={{ fontSize: '24px', cursor:'pointer' }} onClick= {()=>{window.history.back();}}/>
+//                         </CCol>
+//                         <CCol sm={4} lg={7} md={7}>
+//                             <CFormLabel className="fs-2 mt-0">Element</CFormLabel>
+//                         </CCol>
+//                         <CCol sm={5} lg={3} md={3} className='text-end'>
+//                             <CButton type="button" className="col-form-label fs-6" variant='outline' color="success" onClick={() => { onHeaderSave(); }} >Save Element</CButton>
+//                         </CCol>
+//                     </CRow>
+//                 </CCardHeader>
+//                 <CCardBody>
+//                     <CForm ref={formHeader} id="FormHeader">
+//                         <CRow className="mb-3">
+//                             <CCol lg={3} md={12} sm={12}>
+//                                 <CRow>
+//                                     <CCol lg={6} md={2} sm={4} ><CFormLabel className='mt-2'>Element Code</CFormLabel></CCol>
+//                                     <CCol lg={6} md={6} sm={8} >  <CFormInput  inline="true" readOnly plainText
+//                                     type="text"
+//                                     name="element_code"
+//                                     value={element.element_code}
+//                                     onChange={({ target }) => { let p = { ...element }; p["element_code"] = (target.value); setElement(p); }}
+//                                 /></CCol>
+//                                 </CRow>
+                              
+//                             </CCol>
+//                             <CCol lg={3} md={6} sm={12}>
+//                                 <CRow>
+//                                     <CCol lg={3} md={3} sm={4} ><CFormLabel>Alias</CFormLabel></CCol>
+//                                     <CCol lg={9} md={9} sm={8} > <CFormInput inline="true" 
+//                                     type="text" plainText className="bottominput"
+//                                     name="element_alias"
+//                                     value={element.element_alias}
+//                                     onChange={({ target }) => { let p = { ...element }; p["element_alias"] = (target.value); setElement(p); }}
+//                                 /></CCol>
+//                                 </CRow>
+                               
+//                             </CCol>
+//                             <CCol lg={6} md={6} sm={12}>
+//                                 <CRow>
+//                                     <CCol lg={3} md={3} sm={4} ><CFormLabel>Description</CFormLabel></CCol>
+//                                     <CCol lg={9} md={9}  sm={8}> <CFormInput inline="true"
+//                                     type="text" 
+//                                     name="element_name" plainText className="bottominput"
+//                                     value={element.element_name}
+//                                     onChange={({ target }) => { let p = { ...element }; p["element_name"] = (target.value); setElement(p); }}
+//                                 /></CCol>
+//                                 </CRow>
+                               
+//                             </CCol>
+//                         </CRow>
+//                         <CRow className="mb-3">
+//                             <CCol lg={6}md={4} sm={12}>
+
+//                                 <CRow>
+//                                     <CCol lg={3} md={4} sm={4}><CFormLabel className="mb-2">Unit <BsPlusCircle className='text-primary' onClick={() => { window.open('/master/unit', '_blank'); }} /></CFormLabel></CCol>
+//                                     <CCol lg={9} md={8} sm={8}> <Select name='unit_id' label="Unit" options={units}
+//                                     value={element.unit_id}
+//                                     onChange={(e) => { let p = { ...element }; p["unit_id"] = (e.value); setElement(p); }}
+//                                 /></CCol>
+//                                 </CRow>
+                                
+                               
+//                             </CCol>
+//                             <CCol lg={6} md={8} sm={12}>
+//                                 <CRow>
+//                                     <CCol lg={3} md={3} sm={4} ><CFormLabel>Decimal Places</CFormLabel></CCol>
+//                                     <CCol lg={9} md={9} sm={8} >  <CFormInput inline="true" 
+//                                     type="number" plainText className="bottominput"
+//                                     value={element.decimal_place}
+//                                     name="decimal_place"
+//                                     onChange={({ target }) => { let p = { ...element }; p["decimal_place"] = (target.value); setElement(p); }}
+//                                 /></CCol>
+//                                 </CRow>
+                              
+//                             </CCol>
+//                             {/* <CCol md={6}>
+//                                 <CFormInput inline="true" label="Alias"
+//                                     type="text"
+//                                     name="description_patient"
+//                                     onChange={({ target }) => { let p = { ...element }; p["description_patient"] = (target.value); setElement(p); }}
+//                                 />
+//                             </CCol> */}
+
+//                         </CRow>
+
+//                         <CRow className="mb-3">
+//                             <CCol lg={6} md={6} sm={12}>
+//                                 <CRow>
+//                                     <CCol lg={4} md={12} sm={12}> <CFormLabel htmlFor="reference_range" className="col-form-label">Reference Range</CFormLabel></CCol>
+//                                     <CCol lg={8} md={12} sm={12} >
+                                   
+
+//                                     <CFormTextarea inline="true"
+//                                         type="text"
+//                                         name="common_reference"
+//                                         value={element.common_reference}
+//                                         rows={6}
+//                                         onChange={({ target }) => { let p = { ...element }; p["common_reference"] = (target.value); setElement(p); }}
+//                                     />
+//                                 </CCol>
+//                                 </CRow>
+                              
+//                             </CCol>
+//                             <CCol lg={6} md={6} sm={12}>
+//                                 <CRow className="mb-3 mt-3">
+//                                     <CCol lg={4} md={4} sm={5}><CFormLabel className="mb-2">Division <BsPlusCircle className='text-primary' onClick={() => { window.open('/master/division', '_blank'); }} /></CFormLabel></CCol>
+//                                     <CCol lg={8} md={8} sm={7}>
+                                        
+//                                         <Select name='division_id' options={divisions}
+//                                             value={element.division_id}
+//                                             onChange={(e) => { let p = { ...element }; p["division_id"] = (e.value); setElement(p); }}
+//                                         />
+//                                     </CCol>
+//                                 </CRow>
+//                                 <CRow className="mb-3">
+//                                     <CCol lg={4} md={5} sm={5}>
+//                                     <CFormLabel htmlFor="element_group" className="mb-2">Element Group <BsPlusCircle className='text-primary' onClick={() => { window.open('/master/elementgroup', '_blank'); }} /></CFormLabel>
+//                                     </CCol>
+//                                     <CCol  lg={8} md={7} sm={7}>
+                                        
+//                                         <Select name='element_group' options={elementGroups} value={element.element_group}
+//                                             onChange={(e) => { let p = { ...element }; p["element_group"] = (e.value); setElement(p); }}
+//                                         />
+//                                     </CCol>
+//                                 </CRow>
+//                             </CCol>
+//                         </CRow>
+
+//                         <CRow className="mb-3 py-0">
+//                             <CFormLabel htmlFor="reference_alert" className="col-form-label fs-4">Reference Alert</CFormLabel>
+//                         </CRow>
+//                         <CRow className='mb-3'>
+//                             <CCol lg={3} md={6} sm={12}>
+//                                 <CRow>
+//                                     <CCol lg={6} md={4} sm={4} >
+//                                         <CFormLabel>Upper Value</CFormLabel>
+//                                     </CCol>
+//                                     <CCol lg={6} md={8} sm={8} > <CFormInput inline="true"
+//                                     type="number" plainText className='bottominput'
+//                                     name="upper"
+//                                     value={element.upper}
+//                                     onChange={({ target }) => { let p = { ...element }; p["upper"] = (target.value); setElement(p); }}
+//                                 /></CCol>
+//                                 </CRow>
+                                 
+
+                               
+//                             </CCol>
+//                             <CCol lg={3} md={6} sm={12}>
+//                                   <CRow>
+//                                     <CCol lg={6} md={4} sm={4} >
+//                                         <CFormLabel>Critical Upper</CFormLabel>
+//                                     </CCol>
+//                                     <CCol lg={6} md={8} sm={8} > <CFormInput inline="true"
+//                                     type="number" plainText className='bottominput'
+//                                     name="critical_upper"
+//                                     value={element.critical_upper}
+//                                     onChange={({ target }) => { let p = { ...element }; p["critical_upper"] = (target.value); setElement(p); }}
+//                                 /></CCol>
+//                                 </CRow>
+                                 
+
+                               
+//                             </CCol>
+//                             <CCol lg={3} md={6} sm={12}>
+//                             <CRow>
+//                                     <CCol lg={6} md={4} sm={4} >
+//                                         <CFormLabel>Lower Value</CFormLabel>
+//                                     </CCol>
+//                                     <CCol lg={6} md={8} sm={8} >
+//                                 <CFormInput inline="true"
+//                                     type="number" plainText className='bottominput'
+//                                     name="lower"
+//                                     value={element.lower}
+//                                     onChange={({ target }) => { let p = { ...element }; p["lower"] = (target.value); setElement(p); }}
+//                                 /></CCol>
+//                                 </CRow>
+                                 
+
+//                             </CCol>
+//                             <CCol lg={3} md={6} sm={12}>
+//                             <CRow>
+//                                     <CCol lg={6} md={4} sm={4} >
+//                                         <CFormLabel>Critical Lower</CFormLabel>
+//                                     </CCol>
+//                                     <CCol lg={6} md={8} sm={8} > <CFormInput inline="true"
+//                                     type="number" plainText className='bottominput'
+//                                     name="critical_lower"
+//                                     value={element.critical_lower}
+//                                     onChange={({ target }) => { let p = { ...element }; p["critical_lower"] = (target.value); setElement(p); }}
+//                                 /></CCol>
+//                                 </CRow>
+                                 
+
+                               
+//                             </CCol>
+//                         </CRow>
+//                         <CRow className="mb-3">
+//                             <CCol  lg={3}  md={4} sm={6} >
+//                                 <CFormCheck label="Print Seperate Barcode"
+//                                     name="sperate_barcode"
+//                                     checked={element.sperate_barcode}
+//                                     onChange={({ target }) => { let p = { ...element }; p["sperate_barcode"] = (target.checked); setElement(p); }}
+//                                 />
+//                             </CCol>
+//                             <CCol lg={3}  md={3} sm={6} >
+//                                 <CFormCheck label="Amend Keywords"
+//                                     name="amend_keyword"
+//                                     checked={element.amend_keyword}
+//                                     onChange={({ target }) => { let p = { ...element }; p["amend_keyword"] = (target.checked); setElement(p); }}
+//                                 />
+//                             </CCol>
+//                             <CCol  lg={3}  md={3} sm={6} >
+//                                 <CFormCheck label="Calculation"
+//                                     name="calculate"
+//                                     checked={element.calculate}
+//                                     onChange={({ target }) => { let p = { ...element }; p["calculate"] = (target.checked); setElement(p); }}
+//                                 />
+//                             </CCol>
+//                             <CCol  lg={3}  md={2} sm={6} >
+//                                 <CFormCheck label="Highlight"
+//                                     name="highlight"
+//                                     checked={element.highlight}
+//                                     onChange={({ target }) => { let p = { ...element }; p["highlight"] = (target.checked); setElement(p); }}
+//                                 />
+//                             </CCol>
+//                         </CRow>
+//                         <CRow className="mb-3">
+                     
+//                                 <CFormLabel htmlFor="keyword" className=" col-form-label fs-4">Keyword</CFormLabel>
+                   
+//                         </CRow>
+
+//                         <CRow className="mb-3">
+//                             <CCol lg={4} md={6} sm={12}>
+//                                 <CRow>
+//                                     <CCol lg={3} md={3} sm={4} > <CFormLabel className="col-auto col-form-label">Keyword</CFormLabel></CCol>
+//                                     <CCol lg={9} md={9} sm={8} > <CFormInput inline="true"
+//                                     type="text"
+//                                     name="keyword"
+//                                     value={keywordForm.keyword}
+//                                     onChange={({ target }) => { let p = { ...keywordForm }; p["keyword"] = (target.value); setKeywordForm(p); }}
+//                                     placeholder="keyword" /></CCol>
+//                                 </CRow>
+                               
+                               
+//                             </CCol>
+//                             <CCol lg={4} md={2} sm={12}>
+//                                 <CRow>
+//                                     <CCol> <CFormSwitch className='mt-10' label="Default" name="default" checked={keywordForm.default} onChange={({ target }) => { let p = { ...keywordForm }; p["default"] = (target.checked); setKeywordForm(p); }} /></CCol>
+//                                 </CRow>
+                               
+                               
+//                             </CCol>
+//                             <CCol lg={2} md={4} sm={12} className='text-end'>
+//                                 <CButton type="button" variant='outline'  className="col-form-label fs-6" onClick={e => { onSubmitAddOrUpdateKeyword(e.target.value); }}>Add Keyword</CButton>
+//                             </CCol>
+//                         </CRow>
+
+//                         <CRow className="mb-3">
+//                             <CCol md={12} lg={12} sm={12}>
+//                                 <DataGrid columns={keywordColumns} rows={keywords} isActionColumns={true} title={'Keyword'} height={200} deleteFunc={deleteKeyword} isEdit={true} editFunc={editKeyword} />
+//                             </CCol>
+//                         </CRow>
+//                         <CRow className="mb-3">
+                  
+//                                 <CFormLabel htmlFor="age_wise_reference" className="col-form-label fs-4">Age Wise Reference</CFormLabel>
+                  
+//                         </CRow>
+//                         <CRow className="mb-3">
+//                             <CCol lg={9} md={12} sm={12}>
+//                                 <CRow>
+
+//                             <CCol lg={4}  md={6} sm={12}>
+//                                     <CRow>
+//                                         <CCol lg={5} md={4} sm={4} > <CFormLabel className="col-form-label">From Days</CFormLabel></CCol>
+//                                         <CCol lg={7} md={8} sm={8} > <CFormInput inline="true"  plainText className='bottominput'
+//                                     type="number"
+//                                     name="i_from_days"
+//                                     value={ageWiseReferenceForm.i_from_days}
+//                                     onChange={({ target }) => { let p = { ...ageWiseReferenceForm }; p["i_from_days"] = (target.value); setAgeWiseReferenceForm(p); }}
+//                                 /></CCol>
+//                                     </CRow>
+                               
+                               
+//                             </CCol>
+
+//                             <CCol lg={4}  md={6} sm={12}>
+//                             <CRow>
+//                                         <CCol lg={5} md={4} sm={4} > <CFormLabel className="  col-form-label">To Days</CFormLabel></CCol>
+//                                         <CCol lg={7} md={8} sm={8} >  <CFormInput inline="true" plainText className='bottominput'
+//                                     type="number"
+//                                     name="i_to_days"
+//                                     value={ageWiseReferenceForm.i_to_days}
+//                                     onChange={({ target }) => { let p = { ...ageWiseReferenceForm }; p["i_to_days"] = (target.value); setAgeWiseReferenceForm(p); }}
+//                                 /></CCol>
+//                                     </CRow>
+                               
+                               
+//                             </CCol>
+
+//                             <CCol lg={4}  md={6} sm={12}>
+//                             <CRow>
+//                                         <CCol lg={3} md={4} sm={4} ><CFormLabel className="  col-form-label">sex</CFormLabel></CCol>
+//                                         <CCol lg={9} md={8} sm={8} ><Select plainText className='bottominput'
+//                                     name="sex"
+//                                     options={[{ label: "Male", value: "M" }, { label: "Female", value: "F" }, { label: "Unknown", value: "U" }]}
+//                                     value={ageWiseReferenceForm.sex}
+//                                     onChange={(selectedoption) => { let p = { ...ageWiseReferenceForm }; p["sex"] = (selectedoption.value); setAgeWiseReferenceForm(p); }}
+//                                 /></CCol>
+//                                     </CRow>
+                                
+                                
+//                             </CCol>
+
+//                             <CCol lg={4}  md={6} sm={12}>
+//                             <CRow>
+//                                         <CCol lg={6} md={4} sm={4} >  <CFormLabel className="  col-form-label">upper</CFormLabel></CCol>
+//                                         <CCol lg={6} md={8} sm={8} > <CFormInput inline="true"
+//                                     type="number" plainText className='bottominput'
+//                                     name="upper"
+//                                     value={ageWiseReferenceForm.upper}
+//                                     onChange={({ target }) => { let p = { ...ageWiseReferenceForm }; p["upper"] = (target.value); setAgeWiseReferenceForm(p); }}
+//                                 /></CCol>
+//                                     </CRow>
+                              
+                               
+//                             </CCol>
+
+//                             <CCol lg={4}  md={6} sm={12}>
+//                             <CRow>
+//                                         <CCol lg={6} md={4} sm={4} > <CFormLabel className=" col-form-label">critical upper</CFormLabel></CCol>
+//                                         <CCol lg={6} md={8} sm={8} >  <CFormInput inline="true"
+//                                     type="number" plainText className='bottominput'
+//                                     name="critical_upper"
+//                                     value={ageWiseReferenceForm.critical_upper}
+//                                     onChange={({ target }) => { let p = { ...ageWiseReferenceForm }; p["critical_upper"] = (target.value); setAgeWiseReferenceForm(p); }}
+//                                 /></CCol>
+//                                     </CRow>
+                                
+                               
+//                             </CCol>
+
+//                             <CCol lg={4} md={6}  sm={12}>
+//                             <CRow>
+//                                         <CCol lg={6} md={4} sm={4} > <CFormLabel className="  col-form-label">lower</CFormLabel></CCol>
+//                                         <CCol lg={6} md={8} sm={8} > <CFormInput inline="true"
+//                                     type="number" plainText className='bottominput'
+//                                     name="lower"
+//                                     value={ageWiseReferenceForm.lower}
+//                                     onChange={({ target }) => { let p = { ...ageWiseReferenceForm }; p["lower"] = (target.value); setAgeWiseReferenceForm(p); }}
+//                                 /></CCol>
+//                                     </CRow>
+                               
+                               
+//                             </CCol>
+
+//                             <CCol lg={4}  md={6} sm={12}>
+//                             <CRow>
+//                                         <CCol lg={6} md={4} sm={4} >   <CFormLabel className=" col-form-label">critical_lower</CFormLabel></CCol>
+//                                         <CCol lg={6} md={8} sm={8} >  <CFormInput inline="true"
+//                                     type="number" plainText className='bottominput'
+//                                     name="critical_lower"
+//                                     value={ageWiseReferenceForm.critical_lower}
+//                                     onChange={({ target }) => { let p = { ...ageWiseReferenceForm }; p["critical_lower"] = (target.value); setAgeWiseReferenceForm(p); }}
+//                                 /></CCol>
+//                                     </CRow>
+                             
+                              
+//                             </CCol>
+
+//                                 </CRow>
+//                             </CCol>
+                            
+
+//                             <CCol lg={3} md={12} sm={12} className=' mt-2 text-end'>
+//                                 <CButton type="button" className="col-form-label fs-6" variant='outline' onClick={e => { onSubmitAddOrUpdateAgeWiseReference(e.target.value); }}>Add Age Wise Reference</CButton>
+//                             </CCol>
+//                         </CRow>
+//                         <CRow className="mb-3">
+//                             <CCol lg={12} md={12}>
+//                                 <DataGrid columns={ageWiseRefColumns} rows={ageWiseReferences} isActionColumns={true} title={'Age Wise Reference'} height={200} deleteFunc={deleteAgeWiseReference} isEdit={true} editFunc={editAgeWiseReference} />
+//                             </CCol>
+//                         </CRow>
+//                         <CRow className="mb-3">
+                   
+//                                 <CFormLabel htmlFor="analyzer_mapping" className="  col-form-label fs-4">Analyzer Mapping</CFormLabel>
+                   
+//                         </CRow>
+//                         <CRow className="mb-3">
+//                             <CCol lg={10} md={12} sm={12}>
+//                                 <CRow>
+
+//                             <CCol lg={6} md={6} sm={12}>
+//                                 <CRow>
+//                                     <CCol lg={3} md={4} sm={4} ><CFormLabel htmlFor="analyzer" >Analyzer <BsPlusCircle className='text-primary' onClick={() => { window.open('/master/analyzer', '_blank'); }} /></CFormLabel></CCol>
+//                                     <CCol lg={9} md={8} sm={8} > <Select name='analyzer_code' options={analyzers} value={mappingForm.analyzer_code}
+//                                     onChange={(e) => { let p = { ...mappingForm }; p["analyzer_code"] = (e.value); setMappingForm(p); }}
+//                                 /></CCol>
+//                                 </CRow>
+                             
+//                             </CCol>
+//                             <CCol lg={6} md={6}>
+//                                 <CRow>
+//                                     <CCol lg={4} md={4} sm={4}><CFormLabel className=" col-form-label">Mapping Code</CFormLabel></CCol>
+//                                     <CCol lg={8} md={8} sm={8}> <CFormInput inline="true"
+//                                     type="text" plainText className='bottominput'
+//                                     name="mapping_code"
+//                                     value={mappingForm.mapping_code}
+//                                     onChange={({ target }) => { let p = { ...mappingForm }; p["mapping_code"] = (target.value); setMappingForm(p); }}
+//                                 /></CCol>
+//                                 </CRow>
+                                
+                               
+//                             </CCol>
+//                             <CCol lg={6} md={6}>
+//                                 <CRow>
+//                                     <CCol lg={3} md={4} sm={4}><CFormLabel htmlFor="assay" className="col-12 mb-2">Assay <BsPlusCircle className='text-primary' onClick={() => { window.open('/master/analyzer', '_blank'); }} /></CFormLabel></CCol>
+//                                     <CCol lg={9} md={8} sm={8}><Select name='assay' options={[{ label: "Assay 1", value: "AS-01" }, { label: "Assay 2", value: "AS-02" }]} value={mappingForm.assay_id}
+//                                     onChange={(e) => { let p = { ...mappingForm }; p["assay_id"] = (e.value); setMappingForm(p); }}
+//                                 /></CCol>
+//                                 </CRow>
+                                
+                                
+//                             </CCol>
+//                             <CCol lg={3} md={3}  sm={6}>
+//                              <CFormSwitch className='mt-10' name="default" label="Calculation" checked={keywordForm.calculation} onChange={({ target }) => { let p = { ...mappingForm }; p["calculation"] = (target.checked); setMappingForm(p); }} />
+                                
+                                
+//                             </CCol>
+//                             <CCol lg={3}  md={3} sm={6}>
+                           
+//                                 <CFormSwitch className='mt-10' name="default" label="Order" checked={keywordForm.order} onChange={({ target }) => { let p = { ...mappingForm }; p["order"] = (target.checked); setMappingForm(p); }} />
+//                             </CCol>
+//                                 </CRow>
+//                             </CCol>
+                            
+
+//                             <CCol lg={2} md={12} className='text-end'>
+//                                 <CButton type="button"  variant='outline' className="col-form-label fs-6" onClick={e => { onSubmitAddOrUpdateAnalyzerMapping(e.target.value); }}>Add Analyzer Mapping</CButton>
+//                             </CCol>
+//                         </CRow>
+//                         <CRow className="mb-3">
+//                             <CCol md={12} lg={12} sm={12}>
+//                                 <DataGrid columns={ananlyzerMappingColumns} rows={mappings} isActionColumns={true} title={'Analyzer Mapping'} height={200} deleteFunc={deleteMapping} isEdit={true} editFunc={editMapping} />
+//                             </CCol>
+//                         </CRow>
+//                     </CForm>
+//                 </CCardBody>
+//             </CCard>
+//         </>
+//     )
+// }
+
+// export default Index;

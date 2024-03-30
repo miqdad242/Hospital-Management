@@ -1,0 +1,122 @@
+// Here you can add other styles
+.card,
+.dropdown-menu,
+.footer,
+.header,
+.sidebar {
+  box-shadow: rgba(126, 126, 126, 0.02) 0 2px 5px -1px, rgb(0 0 0 / 5%) 0 1px 3px -1px;
+}
+
+.sidebar-overlaid {
+  box-shadow: rgb(50 50 93 / 2%) 0 2px 5px -1px, rgb(0 0 0 / 5%) 0 1px 3px -1px, 0 5px 6px -3px rgb(0 0 0 / 25%);
+}
+
+.card-header {
+  border-bottom: 1px solid var(--cui-card-border-color);
+}
+
+.footer,
+.header {
+  border: 0;
+}
+
+.sidebar-brand {
+  justify-content: space-between;
+  padding: 0 ($sidebar-nav-link-padding-x * .5) 0 ($sidebar-nav-link-padding-x * .75);
+}
+
+.sidebar-toggler {
+  flex: 0 0 2rem;
+  background-color: transparent;
+
+  &::before {
+    width: 2rem;
+  }
+
+  &:hover {
+    background-color: transparent;
+  }
+}
+
+.sidebar-narrow-unfoldable:not(:hover) {
+  .sidebar-brand {
+    justify-content: center;
+    padding: 0;
+  }
+  .sidebar-toggler {
+    display: none;
+  }
+}
+
+.bottominput {
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid #E7E7E7;
+}
+.bordernone{
+border: none;
+background-color: transparent;
+}
+.startmr{
+margin-left: 40px;
+}
+.deletedfile{
+background-color: rgb(255, 167, 167);
+
+}
+.deletedfiletext{
+color: #ffffff;
+font-size: large;
+}
+.onoff{
+border-color: #000000;
+background-color: transparent;
+
+}
+
+.box{
+border-style: solid;
+border-color: #E7E7E7;
+border-radius: 5px;
+padding: 5px;
+}
+
+.textbold{
+font-weight: bold;
+}
+.p-5{
+  padding: 1rem !important;
+}
+.card-cap-padding-y-custom{
+  padding-top: 0rem !important;
+  padding-bottom: 0rem !important;
+}
+
+.tableh{
+  height: 0px;
+
+}
+
+.userImages {
+  width: fit-content;
+  position: relative;
+}
+.userImages:hover::after {
+  content: '\274C';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2em;
+  color: #fff; 
+  background-color: rgba(0, 0, 0, 0.5); 
+  pointer-events: none;
+}
+
+.smalllaptop{
+  font-size: 1px !important;
+}
